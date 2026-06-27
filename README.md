@@ -1,12 +1,4 @@
-# Yperatou - Performance Legends playable demo
-
-
-## Δομή
-
-- `index.html`
-- `style.css`
-- `script.js`
-- `assets/cars/`
+# Yperatou - Mobile devices playable demo
 
 ## Λειτουργικότητα
 

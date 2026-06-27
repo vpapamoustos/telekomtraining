@@ -2,7 +2,7 @@ import { APP_VERSION, APP_CHANGELOG } from "./src/changelog.js";
 import { DECKS } from "./src/data.js";
 import { S } from "./src/state.js";
 
-let ACTIVE_DECK = DECKS.europe;
+let ACTIVE_DECK = DECKS.mobile;
 
 function attrs() {
   return ACTIVE_DECK.attrs;
@@ -106,7 +106,7 @@ function startMatch(mode, type) {
 
   const n =
     type === "quick"
-      ? 14
+      ? 4
       : 30;
 
   let deck = shuffle(ACTIVE_DECK.cards).slice(0, n);
@@ -132,7 +132,7 @@ function startMatch(mode, type) {
 function h() {
   const showTimer = S.matchType === "time" && S.screen !== "home";
   const timerIsDanger = showTimer && S.timeLeft <= 30;
-  const title = S.screen === "home" ? "Υπερατού Game" : ACTIVE_DECK.title;
+  const title = S.screen === "home" ? "Training Cards" : ACTIVE_DECK.title;
 
   return `
     <header class="mb-3">
@@ -142,7 +142,7 @@ function h() {
           ${
             S.screen !== "home"
               ? `
-                <p class="text-[10px] font-black uppercase tracking-[.25em] text-amber-400">
+                <p class="text-[10px] font-black uppercase tracking-[.25em] text-white">
                   Υπερατού
                 </p>
               `
@@ -161,7 +161,7 @@ function h() {
                 <div class="rounded-lg border px-2 py-1 ${
                   timerIsDanger
                     ? "border-red-500 bg-red-500/20 text-red-300"
-                    : "border-amber-500 bg-amber-500/10 text-amber-300"
+                    : "border-pink-600 bg-pink-600/10 text-amber-300"
                 }">
                   <span class="text-xs font-black">
                     ${formatTime(S.timeLeft)}
@@ -172,7 +172,7 @@ function h() {
           }
 
           <div class="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1">
-            <span class="text-[10px] font-bold text-amber-400">
+            <span class="text-[10px] font-bold text-white">
               v${APP_VERSION}
             </span>
           </div>
@@ -191,7 +191,7 @@ function h() {
 
 function badge(r) {
   const m = {
-    Legendary: "bg-amber-500 text-slate-950",
+    Legendary: "bg-pink-600 text-white",
     Epic: "bg-purple-500",
     Rare: "bg-sky-500",
     Uncommon: "bg-emerald-500",
@@ -264,7 +264,7 @@ function scoreBar() {
         <p class="text-2xl font-black">${S.p.length}</p>
       </div>
 
-      <div class="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-3 text-center">
+      <div class="rounded-2xl border border-amber-400/30 bg-pink-600/10 p-3 text-center">
         <p class="text-xs text-amber-300">Κάρτες σε αναμονή</p>
         <p class="text-2xl font-black">${S.pending.length}</p>
       </div>
@@ -302,7 +302,7 @@ function debugDeckOrder() {
       ontoggle="S.debugOpen = this.open"
       class="mb-4 rounded-2xl border border-slate-700 bg-slate-900/80 p-4"
     >
-      <summary class="cursor-pointer text-sm font-black text-amber-400">
+      <summary class="cursor-pointer text-sm font-black text-white">
         Debug: Card order
       </summary>
 
@@ -339,7 +339,7 @@ function changelogPanel() {
       <div class="mt-4 grid gap-4">
         ${APP_CHANGELOG.map(item => `
           <div class="rounded-2xl border border-slate-800 bg-slate-950/70 p-4">
-            <p class="mb-2 text-sm font-black text-amber-400">
+            <p class="mb-2 text-sm font-black text-white">
               v${item.version}
             </p>
 
@@ -362,16 +362,14 @@ function home() {
 
       <div class="mb-5">
         <label class="mb-2 block text-sm font-bold text-slate-300">
-          Είδος καρτών
+          Κατηγορία συσκευών
         </label>
       
         <select
           onchange="selectDeck(this.value)"
           class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-bold text-white outline-none focus:border-amber-400"
         >
-          <option value="europe" ${ACTIVE_DECK.id === "europe" ? "selected" : ""}>Χώρες της Ευρώπης</option>
-          <option value="performance" ${ACTIVE_DECK.id === "performance" ? "selected" : ""}>Performance Legends</option>
-          <option value="space" ${ACTIVE_DECK.id === "space" ? "selected" : ""}>Cosmic Legends</option>
+          <option value="mobiles" ${ACTIVE_DECK.id === "mobiles" ? "selected" : ""}>Κινητά</option>
         </select>
       </div>
 
@@ -385,7 +383,7 @@ function home() {
             onclick="S.mode='bot'; S.player2Name='Υπολογιστής'; render()"
             class="rounded-2xl px-4 py-3 font-black ${
               S.mode === "bot"
-                ? "bg-amber-500 text-slate-950"
+                ? "bg-pink-600 text-white"
                 : "border border-slate-700 bg-slate-800 text-white"
             }"
           >
@@ -396,7 +394,7 @@ function home() {
             onclick="S.mode='human'; if(S.player2Name==='Υπολογιστής') S.player2Name='Παίκτης 2'; render()"
             class="rounded-2xl px-4 py-3 font-black ${
               S.mode === "human"
-                ? "bg-amber-500 text-slate-950"
+                ? "bg-pink-600 text-white"
                 : "border border-slate-700 bg-slate-800 text-white"
             }"
           >
@@ -440,9 +438,9 @@ function home() {
               : 'Υπολογιστής';
             startMatch(S.mode, 'quick');
           "
-          class="rounded-2xl bg-amber-500 px-5 py-4 font-black text-slate-950"
+          class="rounded-2xl bg-pink-600 px-5 py-4 font-black text-white"
         >
-          Quick Match · 7 vs 7
+          Quick Match · 2 vs 2
         </button>
 
         <button
@@ -466,7 +464,7 @@ function home() {
               : 'Υπολογιστής';
             startMatch(S.mode, 'time');
           "
-          class="rounded-2xl border border-amber-500 bg-slate-950 px-5 py-4 font-black text-amber-400"
+          class="rounded-2xl border border-pink-600 bg-slate-950 px-5 py-4 font-black text-white"
         >
           Time Attack · 3 min
         </button>
@@ -660,7 +658,7 @@ function result() {
     </section>
 
     <div class="mb-8">
-      <button onclick="cont()" class="w-full rounded-2xl bg-amber-500 px-4 py-4 font-black text-slate-950">
+      <button onclick="cont()" class="w-full rounded-2xl bg-pink-600 px-4 py-4 font-black text-white">
         Επόμενη κάρτα
       </button>
     </div>
@@ -687,7 +685,7 @@ function handoff() {
 
   app.innerHTML = h() + `
     <section class="rounded-[2rem] border border-slate-800 bg-slate-900 p-6 text-center">
-      <p class="text-xs uppercase tracking-[.35em] text-amber-400">
+      <p class="text-xs uppercase tracking-[.35em] text-white">
         Παιχνίδι 2 παικτών
       </p>
 
@@ -701,7 +699,7 @@ function handoff() {
 
       <button
         onclick="S.screen='game'; render()"
-        class="mt-6 w-full rounded-2xl bg-amber-500 px-4 py-4 font-black text-slate-950"
+        class="mt-6 w-full rounded-2xl bg-pink-600 px-4 py-4 font-black text-white"
       >
         Είμαι ο/η ${nextPlayerName} - Συνέχεια
       </button>
@@ -727,7 +725,7 @@ function over() {
 
   app.innerHTML = h() + `
     <section class="rounded-[2rem] border border-slate-800 bg-slate-900 p-6 text-center">
-      <p class="text-xs uppercase tracking-[.35em] text-amber-400">
+      <p class="text-xs uppercase tracking-[.35em] text-white">
         Τέλος παιχνιδιού
       </p>
 
@@ -757,7 +755,7 @@ function over() {
         </div>
       </div>
 
-      <button onclick="start(S.matchType)" class="mt-6 w-full rounded-2xl bg-amber-500 px-4 py-4 font-black text-slate-950">
+      <button onclick="start(S.matchType)" class="mt-6 w-full rounded-2xl bg-pink-600 px-4 py-4 font-black text-white">
         Παίξε ξανά
       </button>
 

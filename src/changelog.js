@@ -1,6 +1,12 @@
-export const APP_VERSION = "0.2a";
+export const APP_VERSION = "0.3a";
 export const APP_CHANGELOG = [
   {
+    version: "0.3a",
+    changes: [
+      "Added card animation.",
+      "Added animation when the user selects an attribute."
+    ]
+  },{
     version: "0.2a",
     changes: [
       "Initial Mobile list updated.",

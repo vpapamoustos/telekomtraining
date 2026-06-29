@@ -1,197 +1,50 @@
-const CARS = [
-  { name: "Ferrari F40", country: "Italy", rarity: "Legendary", speed: 324, hp: 478, accel: 4.1, value: 2500000, image: "assets/cars/car_01.jpg" },
-  { name: "Porsche 911 GT3 RS", country: "Germany", rarity: "Epic", speed: 296, hp: 525, accel: 3.2, value: 350000, image: "assets/cars/car_02.jpg" },
-  { name: "McLaren 720S", country: "UK", rarity: "Epic", speed: 341, hp: 710, accel: 2.9, value: 220000, image: "assets/cars/car_03.jpg" },
-  { name: "Audi R8", country: "Germany", rarity: "Rare", speed: 331, hp: 620, accel: 3.1, value: 140000, image: "assets/cars/car_04.jpg" },
-  { name: "BMW M4 CSL", country: "Germany", rarity: "Rare", speed: 307, hp: 550, accel: 3.7, value: 150000, image: "assets/cars/car_05.jpg" },
-  { name: "Porsche Cayman GT4", country: "Germany", rarity: "Rare", speed: 304, hp: 420, accel: 4.2, value: 110000, image: "assets/cars/car_06.jpg" },
-  { name: "Toyota Supra MK4 (A80)", country: "Japan", rarity: "Rare", speed: 250, hp: 320, accel: 4.9, value: 110000, image: "assets/cars/car_07.jpg" },
-  { name: "Lamborghini Gallardo", country: "Italy", rarity: "Rare", speed: 325, hp: 560, accel: 3.7, value: 130000, image: "assets/cars/car_08.jpg" },
-  { name: "Nissan GT-R R35", country: "Japan", rarity: "Uncommon", speed: 315, hp: 565, accel: 2.9, value: 95000, image: "assets/cars/car_09.jpg" },
-  { name: "Subaru WRX STI", country: "Japan", rarity: "Uncommon", speed: 255, hp: 310, accel: 5.2, value: 35000, image: "assets/cars/car_10.jpg" },
-  { name: "BMW M3", country: "Germany", rarity: "Uncommon", speed: 290, hp: 510, accel: 3.9, value: 80000, image: "assets/cars/car_11.jpg" },
-  { name: "BMW M2", country: "Germany", rarity: "Uncommon", speed: 285, hp: 460, accel: 4.1, value: 65000, image: "assets/cars/car_12.jpg" },
-  { name: "Audi RS3", country: "Germany", rarity: "Uncommon", speed: 290, hp: 400, accel: 3.8, value: 70000, image: "assets/cars/car_13.jpg" },
-  { name: "Mercedes-AMG A45", country: "Germany", rarity: "Uncommon", speed: 270, hp: 421, accel: 3.9, value: 65000, image: "assets/cars/car_14.jpg" },
-  { name: "Ford Mustang GT", country: "USA", rarity: "Uncommon", speed: 250, hp: 450, accel: 4.5, value: 55000, image: "assets/cars/car_15.jpg" },
-  { name: "Chevrolet Camaro SS", country: "USA", rarity: "Uncommon", speed: 290, hp: 455, accel: 4.2, value: 50000, image: "assets/cars/car_16.jpg" },
-  { name: "Aston Martin Vantage", country: "UK", rarity: "Uncommon", speed: 314, hp: 510, accel: 3.6, value: 120000, image: "assets/cars/car_17.jpg" },
-  { name: "Nissan 370Z", country: "Japan", rarity: "Uncommon", speed: 250, hp: 332, accel: 5.0, value: 35000, image: "assets/cars/car_18.jpg" },
-  { name: "Mazda MX-5 ND", country: "Japan", rarity: "Common", speed: 220, hp: 184, accel: 6.5, value: 28000, image: "assets/cars/car_19.jpg" },
-  { name: "Toyota GR86", country: "Japan", rarity: "Common", speed: 226, hp: 234, accel: 6.3, value: 35000, image: "assets/cars/car_20.jpg" },
-  { name: "Subaru BRZ", country: "Japan", rarity: "Common", speed: 226, hp: 234, accel: 6.5, value: 34000, image: "assets/cars/car_21.jpg" },
-  { name: "Hyundai i30 N", country: "Korea", rarity: "Common", speed: 250, hp: 280, accel: 5.9, value: 32000, image: "assets/cars/car_22.jpg" },
-  { name: "Volkswagen Golf GTI", country: "Germany", rarity: "Common", speed: 250, hp: 265, accel: 5.9, value: 38000, image: "assets/cars/car_23.jpg" },
-  { name: "Honda Civic Type R", country: "Japan", rarity: "Common", speed: 275, hp: 329, accel: 5.4, value: 50000, image: "assets/cars/car_24.jpg" },
-  { name: "Ford Focus ST", country: "USA", rarity: "Common", speed: 250, hp: 280, accel: 5.7, value: 29000, image: "assets/cars/car_25.jpg" },
-  { name: "Ford Fiesta ST", country: "USA", rarity: "Common", speed: 230, hp: 200, accel: 6.5, value: 22000, image: "assets/cars/car_26.jpg" },
-  { name: "Mini Cooper S", country: "UK", rarity: "Common", speed: 235, hp: 204, accel: 6.7, value: 26000, image: "assets/cars/car_27.jpg" },
-  { name: "Toyota GR Yaris", country: "Japan", rarity: "Common", speed: 230, hp: 280, accel: 5.5, value: 45000, image: "assets/cars/car_28.jpg" },
-  { name: "Renault Megane RS", country: "France", rarity: "Common", speed: 255, hp: 300, accel: 5.8, value: 28000, image: "assets/cars/car_29.jpg" },
-  { name: "Audi S3", country: "Germany", rarity: "Common", speed: 250, hp: 310, accel: 4.8, value: 38000, image: "assets/cars/car_30.jpg" }
+const createMobileDescriptionHtml = (metadata) => `
+  <strong>Κατασκευαστής:</strong> ${metadata.brand}<br>
+  <strong>Έτος κυκλοφορίας:</strong> ${metadata.releaseYear}<br>
+  <strong>Βάρος:</strong> ${metadata.weight}<br>
+  <strong>Πιστοποίηση:</strong> ${metadata.ipRating}<br>
+  <strong>Αποθήκευση:</strong> ${metadata.storage}<br>
+  <strong>Μνήμη RAM:</strong> ${metadata.ram}<br>
+  <strong>Αυτονομία:</strong> ${metadata.batteryLife}<br>
+  <strong>Φωτεινότητα:</strong> ${metadata.brightness}<br>
+  <strong>Εγγραφή video:</strong> ${metadata.videoRecording}<br>
+  <strong>Τιμή:</strong> ${metadata.price}<br>
+  <a href="${metadata.url}" target="_blank" rel="noopener noreferrer">Σελίδα προϊόντος</a>
+`;
+
+const MOBILE_RAW = [
+  { name: "iPhone 17 Pro", screenSize: 6.3, frontCamera: 18, mainCamera: 48, battery: 3998, charging: 25, metadata: { brand: "Apple", releaseYear: 2025, weight: "206 g", ipRating: "IP68", storage: "1TB", price: "1869 €", batteryLife: "15.5 ώρες", brightness: "3000 nits", videoRecording: "8K", ram: "12 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/apple-iphone-17-pro-dual-5g-1tb/?productId=20443001" }, image: "assets/mobile/iphone17-pro.jpg" },
+  { name: "XIAOMI 17T Pro Dual 5G", screenSize: 6.83, frontCamera: 32, mainCamera: 50, battery: 7000, charging: 100, metadata: { brand: "Xiaomi", releaseYear: 2026, weight: "205 g", ipRating: "IP68", storage: "512GB", price: "999.01 €", batteryLife: "70 ώρες", brightness: "3500 nits", videoRecording: "8K", ram: "12 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/xiaomi-17t-pro-dual-5g-12gb/512gb-smartphone/?productId=20447912" }, image: "assets/mobile/xiaomi-17t-pro.jpg" },
+  { name: "SAMSUNG Galaxy S26 Ultra Dual 5G", screenSize: 6.9, frontCamera: 12, mainCamera: 200, battery: 5000, charging: 60, metadata: { brand: "Samsung", releaseYear: 2026, weight: "214 g", ipRating: "IP68", storage: "1TB", price: "1999 €", batteryLife: "31 ώρες", brightness: "2600 nits", videoRecording: "8K", ram: "16 GB", url: "https://www.germanos.gr/product/telephony/mobile/samsung-s26-series/samsung-galaxy-s26-ultra-dual-5g-16gb/1tb-smartphone-black/?productId=20445719" }, image: "assets/mobile/samsung-galaxy-s26-ultra.jpg" },
+  { name: "MOTOROLA Razr Fold Dual 5G 16GB/512GB", screenSize: 8.1, frontCamera: 32, mainCamera: 50, battery: 6000, charging: 80, metadata: { brand: "Motorola", releaseYear: 2026, weight: "205 g", ipRating: "IP49", storage: "512GB", price: "1999 €", batteryLife: "24 ώρες", brightness: "6200 nits", videoRecording: "4K", ram: "16 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/motorola-razr-fold-dual-5g-16gb/512gb-smartphone/?productId=20447175" }, image: "assets/mobile/motorola-razr-fold.jpg" },
+  { name: "OPPO Find X9 Ultra Dual 5G 12GB/512GB", screenSize: 6.82, frontCamera: 50, mainCamera: 200, battery: 7050, charging: 100, metadata: { brand: "Oppo", releaseYear: 2026, weight: "205 g", ipRating: "IP69", storage: "512GB", price: "1799 €", batteryLife: "24 ώρες", brightness: "4000 nits", videoRecording: "8K", ram: "12 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/oppo-find-x9-ultra-dual-5g-12gb/512gb-smartphone/?productId=20447636" }, image: "assets/mobile/oppo-find-x9-ultra.jpg" },
+  { name: "XIAOMI 17 Ultra Dual 5G 16GB/512GB", screenSize: 6.9, frontCamera: 50, mainCamera: 50, battery: 6000, charging: 90, metadata: { brand: "Xiaomi", releaseYear: 2026, weight: "205 g", ipRating: "IP68", storage: "512GB", price: "1449 €", batteryLife: "24 ώρες", brightness: "4000 nits", videoRecording: "8K", ram: "16 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/xiaomi-17-ultra-dual-5g-16gb/512gb-smartphone/?productId=20446264" }, image: "assets/mobile/xiaomi-17-ultra.jpg" },
+  { name: "POCO F8 Ultra Dual 5G 16GB/512GB", screenSize: 6.9, frontCamera: 32, mainCamera: 50, battery: 6500, charging: 100, metadata: { brand: "Poco", releaseYear: 2026, weight: "205 g", ipRating: "IP68", storage: "512GB", price: "949.9 €", batteryLife: "67 ώρες", brightness: "4000 nits", videoRecording: "8K", ram: "16 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/poco-f8-ultra-dual-5g-16gb/512gb-smartphone/?productId=20444760" }, image: "assets/mobile/poco-f8-ultra.jpg" },
+  { name: "Realme GT8 Pro Dual 5G 16GB/512GB", screenSize: 6.79, frontCamera: 32, mainCamera: 50, battery: 7000, charging: 120, metadata: { brand: "Realme", releaseYear: 2026, weight: "205 g", ipRating: "IP69", storage: "512GB", price: "999.9 €", batteryLife: "21.3 ώρες", brightness: "4000 nits", videoRecording: "4K", ram: "16 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/realme-gt8-pro-dual-5g-16gb/512gb-smartphone/?productId=20444819" }, image: "assets/mobile/realme-gt8-pro.jpg" },
+  { name: "TCL 60 Ultra NXTPAPER Dual 5G 12GB/256GB", screenSize: 7.2, frontCamera: 32, mainCamera: 50, battery: 5200, charging: 33, metadata: { brand: "TCL", releaseYear: 2026, weight: "205 g", ipRating: "IP68", storage: "256GB", price: "449.91 €", batteryLife: "24 ώρες", brightness: "4000 nits", videoRecording: "4K", ram: "12 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/tcl-60-ultra-nxtpaper-dual-5g-12gb/256gb-smartphone/?productId=20442025" }, image: "assets/mobile/tcl-60-ultra-nxtpaper.jpg" },
+  { name: "SAMSUNG Galaxy Z Fold7 Dual 5G 12GB/512GB", screenSize: 8, frontCamera: 12, mainCamera: 200, battery: 4400, charging: 25, metadata: { brand: "Samsung", releaseYear: 2026, weight: "205 g", ipRating: "IP48", storage: "512GB", price: "2999 €", batteryLife: "24 ώρες", brightness: "4000 nits", videoRecording: "8K", ram: "12 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/samsung-galaxy-z-fold7-dual-5g-12gb/512gb-enterprise-edition-smartphone/?productId=20442028" }, image: "assets/mobile/samsung-galaxy-z-fold7.jpg" },
+  { name: "APPLE iPhone 17 Pro Max Dual 5G 2TB", screenSize: 6.9, frontCamera: 18, mainCamera: 50, battery: 4823, charging: 40, metadata: { brand: "Apple", releaseYear: 2025, weight: "233 g", ipRating: "IP68", storage: "2TB", price: "2549.01 €", batteryLife: "17 ώρες", brightness: "3000 nits", videoRecording: "4K", ram: "12 GB", url: "https://www.germanos.gr/product/telephony/mobile/5g-smartphones/apple-iphone-17-pro-max-dual-5g-2tb/?productId=20443013" }, image: "assets/mobile/iphone17-pro-max.jpg" },
+  { name: "MOTOROLA Razr 60 Ultra Dual 5G 16GB/512GB", screenSize: 7, frontCamera: 50, mainCamera: 50, battery: 4700, charging: 68, metadata: { brand: "Motorola", releaseYear: 2026, weight: "205 g", ipRating: "IP48", storage: "512GB", price: "999 €", batteryLife: "24 ώρες", brightness: "4000 nits", videoRecording: "8K", ram: "16 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/motorola-razr-60-ultra-dual-5g-16gb/512gb-pantone-wood-smartphone/?productId=20439545" }, image: "assets/mobile/motorola-razr-60-ultra.jpg" },
+  { name: "SAMSUNG Galaxy Z Flip7 Dual 5G 12GB/512GB", screenSize: 6.7, frontCamera: 12, mainCamera: 50, battery: 4000, charging: 67, metadata: { brand: "Samsung", releaseYear: 2026, weight: "190 g", ipRating: "IP48", storage: "512GB", price: "1369 €", batteryLife: "24 ώρες", brightness: "4000 nits", videoRecording: "4K", ram: "12 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/samsung-galaxy-z-flip7-dual-5g-12gb/512gb-smartphone/?productId=20441612" }, image: "assets/mobile/samsung-galaxy-z-flip7.jpg" },
+  { name: "MOTOROLA Signature Swarovski Edition Dual 5G 16GB/512GB", screenSize: 6.78, frontCamera: 50, mainCamera: 50, battery: 5200, charging: 90, metadata: { brand: "Motorola", releaseYear: 2026, weight: "205 g", ipRating: "IP68", storage: "512GB", price: "1199.01 €", batteryLife: "24 ώρες", brightness: "4000 nits", videoRecording: "8K", ram: "16 GB", url: "https://www.germanos.gr/product/telephony/mobile/smartphones-all/motorola-signature-swarovski-edition-dual-5g-16gb/512gb-smartphone/?productId=20447049" }, image: "assets/mobile/motorola-signature-swarovski-edition.jpg" }
 ];
 
-const SPACE = [
-  { name: "Γη", country: "Πλανήτης", rarity: "Common", diameter: 12742, gravity: 9.8, temperature: 15, moons: 1, image: "assets/space/space_01.jpg" },
-  { name: "Σελήνη", country: "Φεγγάρι Γης", rarity: "Common", diameter: 3475, gravity: 1.62, temperature: -20, moons: 0, image: "assets/space/space_02.jpg" },
-  { name: "Άρης", country: "Πλανήτης", rarity: "Common", diameter: 6779, gravity: 3.72, temperature: -63, moons: 2, image: "assets/space/space_03.jpg" },
-  { name: "Αφροδίτη", country: "Πλανήτης", rarity: "Common", diameter: 12104, gravity: 8.87, temperature: 464, moons: 0, image: "assets/space/space_04.jpg" },
-  { name: "Ερμής", country: "Πλανήτης", rarity: "Common", diameter: 4879, gravity: 3.7, temperature: 167, moons: 0, image: "assets/space/space_05.jpg" },
-  { name: "Ευρώπη", country: "Φεγγάρι Δία", rarity: "Common", diameter: 3122, gravity: 1.31, temperature: -160, moons: 0, image: "assets/space/space_06.jpg" },
-  { name: "Ιώ", country: "Φεγγάρι Δία", rarity: "Common", diameter: 3643, gravity: 1.8, temperature: -130, moons: 0, image: "assets/space/space_07.jpg" },
-  { name: "Καλλιστώ", country: "Φεγγάρι Δία", rarity: "Common", diameter: 4821, gravity: 1.24, temperature: -139, moons: 0, image: "assets/space/space_08.jpg" },
-  { name: "Γανυμήδης", country: "Φεγγάρι Δία", rarity: "Common", diameter: 5268, gravity: 1.43, temperature: -163, moons: 0, image: "assets/space/space_09.jpg" },
-  { name: "Τιτάνας", country: "Φεγγάρι Κρόνου", rarity: "Common", diameter: 5150, gravity: 1.35, temperature: -179, moons: 0, image: "assets/space/space_10.jpg" },
-  { name: "Τρίτωνας", country: "Φεγγάρι Ποσειδώνα", rarity: "Common", diameter: 2707, gravity: 0.78, temperature: -235, moons: 0, image: "assets/space/space_11.jpg" },
-  { name: "Εγκέλαδος", country: "Φεγγάρι Κρόνου", rarity: "Common", diameter: 504, gravity: 0.11, temperature: -201, moons: 0, image: "assets/space/space_12.jpg" },
-  { name: "Δίας", country: "Πλανήτης", rarity: "Uncommon", diameter: 139820, gravity: 24.79, temperature: -110, moons: 95, image: "assets/space/space_13.jpg" },
-  { name: "Κρόνος", country: "Πλανήτης", rarity: "Uncommon", diameter: 116460, gravity: 10.44, temperature: -140, moons: 146, image: "assets/space/space_14.jpg" },
-  { name: "Ουρανός", country: "Πλανήτης", rarity: "Uncommon", diameter: 50724, gravity: 8.69, temperature: -195, moons: 28, image: "assets/space/space_15.jpg" },
-  { name: "Ποσειδώνας", country: "Πλανήτης", rarity: "Uncommon", diameter: 49244, gravity: 11.15, temperature: -200, moons: 16, image: "assets/space/space_16.jpg" },
-  { name: "Χάροντας", country: "Φεγγάρι Πλούτωνα", rarity: "Uncommon", diameter: 1212, gravity: 0.29, temperature: -220, moons: 0, image: "assets/space/space_17.jpg" },
-  { name: "Ομπερόν", country: "Φεγγάρι Ουρανού", rarity: "Uncommon", diameter: 1523, gravity: 0.35, temperature: -198, moons: 0, image: "assets/space/space_18.jpg" },
-  { name: "Τιτάνια", country: "Φεγγάρι Ουρανού", rarity: "Uncommon", diameter: 1578, gravity: 0.38, temperature: -203, moons: 0, image: "assets/space/space_19.jpg" },
-  { name: "Ρέα", country: "Φεγγάρι Κρόνου", rarity: "Uncommon", diameter: 1528, gravity: 0.26, temperature: -174, moons: 0, image: "assets/space/space_20.jpg" },
-  { name: "Ήλιος", country: "Αστέρας", rarity: "Rare", diameter: 1392700, gravity: 274, temperature: 5500, moons: 8, image: "assets/space/space_21.jpg" },
-  { name: "Εγγύτατος Κενταύρου", country: "Αστέρας", rarity: "Rare", diameter: 214550, gravity: 1100, temperature: 3042, moons: 0, image: "assets/space/space_22.jpg" },
-  { name: "Άστρο Barnard", country: "Αστέρας", rarity: "Rare", diameter: 274000, gravity: 950, temperature: 3134, moons: 0, image: "assets/space/space_23.jpg" },
-  { name: "Σείριος Α", country: "Αστέρας", rarity: "Rare", diameter: 2380000, gravity: 196, temperature: 9940, moons: 0, image: "assets/space/space_24.jpg" },
-  { name: "Βέγκα", country: "Αστέρας", rarity: "Rare", diameter: 3300000, gravity: 170, temperature: 9600, moons: 0, image: "assets/space/space_25.jpg" },
-  { name: "Αλτάιρ", country: "Αστέρας", rarity: "Rare", diameter: 2500000, gravity: 130, temperature: 7550, moons: 0, image: "assets/space/space_26.jpg" },
-  { name: "Πολικός Αστέρας", country: "Αστέρας", rarity: "Epic", diameter: 65000000, gravity: 5.5, temperature: 6015, moons: 0, image: "assets/space/space_27.jpg" },
-  { name: "Ρίγκελ", country: "Αστέρας", rarity: "Epic", diameter: 109000000, gravity: 7.5, temperature: 12100, moons: 0, image: "assets/space/space_28.jpg" },
-  { name: "Μπετελγκέζ", country: "Ερυθρός Υπεργίγαντας", rarity: "Epic", diameter: 1234000000, gravity: 0.002, temperature: 3500, moons: 0, image: "assets/space/space_29.jpg" },
-  { name: "UY Scuti", country: "Ερυθρός Υπεργίγαντας", rarity: "Legendary", diameter: 2376000000, gravity: 0.001, temperature: 3365, moons: 0, image: "assets/space/space_30.jpg" }
-];
-
-const EUROPE = [
-  { name:"Ελλάδα", population:10.3, area:131957, lifeExpectancy:81.5, distanceFromGreece:0, info:"Πρωτεύουσα: Αθήνα.<br>Ορόσημο: Παρθενώνας.<br>Ο Παρθενώνας χτίστηκε πριν από περίπου 2.500 χρόνια και είναι αφιερωμένος στη θεά Αθηνά, προστάτιδα της αρχαίας Αθήνας.", image:"assets/europe/greece.jpg" },
-  { name:"Ιταλία", population:58.9, area:301340, lifeExpectancy:83.4, distanceFromGreece:1051, info:"Πρωτεύουσα: Ρώμη.<br>Ορόσημο: Κολοσσαίο.<br>Το Κολοσσαίο μπορούσε να χωρέσει δεκάδες χιλιάδες θεατές, που παρακολουθούσαν θεάματα στην καρδιά της αρχαίας Ρώμης.", image:"assets/europe/italy.jpg" },
-  { name:"Γαλλία", population:68.6, area:551695, lifeExpectancy:82.8, distanceFromGreece:2096, info:"Πρωτεύουσα: Παρίσι.<br>Ορόσημο: Πύργος Άιφελ.<br>Ο Πύργος Άιφελ κατασκευάστηκε για την Παγκόσμια Έκθεση του 1889 και σήμερα είναι ένα από τα πιο αναγνωρίσιμα μνημεία στον κόσμο.", image:"assets/europe/france.jpg" },
-  { name:"Γερμανία", population:83.5, area:357022, lifeExpectancy:81.0, distanceFromGreece:1803, info:"Πρωτεύουσα: Βερολίνο.<br>Ορόσημο: Πύλη Βρανδεμβούργου.<br>Η Πύλη Βρανδεμβούργου έγινε σύμβολο της ενότητας της Γερμανίας μετά την πτώση του Τείχους του Βερολίνου.", image:"assets/europe/germany.jpg" },
-  { name:"Ισπανία", population:48.6, area:505990, lifeExpectancy:83.2, distanceFromGreece:2370, info:"Πρωτεύουσα: Μαδρίτη.<br>Ορόσημο: Sagrada Familia.<br>Η Sagrada Familia χτίζεται εδώ και πάνω από 140 χρόνια και παραμένει ένα από τα πιο ξεχωριστά αρχιτεκτονικά έργα της Ευρώπης.", image:"assets/europe/spain.jpg" },
-  { name:"Πορτογαλία", population:10.5, area:92212, lifeExpectancy:81.5, distanceFromGreece:2852, info:"Πρωτεύουσα: Λισαβόνα.<br>Ορόσημο: Πύργος Belém.<br>Ο Πύργος Belém χτίστηκε κοντά στο σημείο απ’ όπου ξεκινούσαν μεγάλα θαλάσσια ταξίδια Πορτογάλων εξερευνητών.", image:"assets/europe/portugal.jpg" },
-  { name:"Ολλανδία", population:17.9, area:41543, lifeExpectancy:81.8, distanceFromGreece:2163, info:"Πρωτεύουσα: Άμστερνταμ.<br>Ορόσημο: Ανεμόμυλοι Kinderdijk.<br>Οι ανεμόμυλοι του Kinderdijk βοήθησαν τους ανθρώπους να ελέγχουν τα νερά σε μια χώρα όπου μεγάλο μέρος της γης βρίσκεται πολύ χαμηλά.", image:"assets/europe/netherlands.jpg" },
-  { name:"Βέλγιο", population:11.7, area:30528, lifeExpectancy:81.9, distanceFromGreece:2090, info:"Πρωτεύουσα: Βρυξέλλες.<br>Ορόσημο: Atomium.<br>Το Atomium μοιάζει με τεράστιο άτομο μεγεθυμένο δισεκατομμύρια φορές και δημιουργήθηκε για την Παγκόσμια Έκθεση του 1958.", image:"assets/europe/belgium.jpg" },
-  { name:"Αυστρία", population:9.1, area:83879, lifeExpectancy:82.0, distanceFromGreece:1283, info:"Πρωτεύουσα: Βιέννη.<br>Ορόσημο: Ανάκτορο Schönbrunn.<br>Το Schönbrunn ήταν θερινό παλάτι των Αψβούργων και έχει εκατοντάδες δωμάτια, κήπους και αίθουσες γεμάτες αυτοκρατορική ιστορία.", image:"assets/europe/austria.jpg" },
-  { name:"Ελβετία", population:8.9, area:41285, lifeExpectancy:83.8, distanceFromGreece:1620, info:"Πρωτεύουσα: Βέρνη.<br>Ορόσημο: Matterhorn.<br>Το Matterhorn είναι ένα από τα πιο διάσημα βουνά των Άλπεων, με χαρακτηριστική πυραμιδοειδή κορυφή που ξεχωρίζει αμέσως.", image:"assets/europe/switzerland.jpg" },
-  { name:"Σουηδία", population:10.6, area:450295, lifeExpectancy:82.4, distanceFromGreece:2408, info:"Πρωτεύουσα: Στοκχόλμη.<br>Ορόσημο: Δημαρχείο Στοκχόλμης.<br>Στο Δημαρχείο της Στοκχόλμης γίνεται κάθε χρόνο το επίσημο δείπνο των Βραβείων Νόμπελ.", image:"assets/europe/sweden.jpg" },
-  { name:"Νορβηγία", population:5.5, area:385207, lifeExpectancy:83.0, distanceFromGreece:2605, info:"Πρωτεύουσα: Όσλο.<br>Ορόσημο: Geirangerfjord.<br>Το Geirangerfjord είναι ένα βαθύ φιόρδ με απότομους βράχους και καταρράκτες, σαν φυσικός δρόμος που άνοιξε η θάλασσα μέσα στα βουνά.", image:"assets/europe/norway.jpg" },
-  { name:"Δανία", population:5.9, area:42933, lifeExpectancy:81.6, distanceFromGreece:2135, info:"Πρωτεύουσα: Κοπεγχάγη.<br>Ορόσημο: Μικρή Γοργόνα.<br>Το άγαλμα της Μικρής Γοργόνας είναι εμπνευσμένο από το παραμύθι του Χανς Κρίστιαν Άντερσεν, ενός από τους πιο γνωστούς παραμυθάδες.", image:"assets/europe/denmark.jpg" },
-  { name:"Φινλανδία", population:5.6, area:338455, lifeExpectancy:82.0, distanceFromGreece:2500, info:"Πρωτεύουσα: Ελσίνκι.<br>Ορόσημο: Καθεδρικός Ελσίνκι.<br>Ο λευκός Καθεδρικός του Ελσίνκι δεσπόζει πάνω από την πλατεία της πόλης και είναι ένα από τα πιο φωτογραφημένα σημεία της Φινλανδίας.", image:"assets/europe/finland.jpg" },
-  { name:"Ιρλανδία", population:5.3, area:70273, lifeExpectancy:82.3, distanceFromGreece:2860, info:"Πρωτεύουσα: Δουβλίνο.<br>Ορόσημο: Cliffs of Moher.<br>Τα Cliffs of Moher υψώνονται εντυπωσιακά πάνω από τον Ατλαντικό Ωκεανό, δημιουργώντας ένα από τα πιο δυνατά φυσικά τοπία της Ιρλανδίας.", image:"assets/europe/ireland.jpg" },
-  { name:"Ηνωμένο Βασίλειο", population:67.7, area:243610, lifeExpectancy:81.0, distanceFromGreece:2400, info:"Πρωτεύουσα: Λονδίνο.<br>Ορόσημο: Big Ben.<br>Το Big Ben είναι το διάσημο ρολόι του Λονδίνου και οι καμπάνες του έχουν συνδεθεί με σημαντικές στιγμές της βρετανικής ιστορίας.", image:"assets/europe/uk.jpg" },
-  { name:"Πολωνία", population:36.8, area:312696, lifeExpectancy:78.6, distanceFromGreece:1598, info:"Πρωτεύουσα: Βαρσοβία.<br>Ορόσημο: Κάστρο Wawel.<br>Το Κάστρο Wawel στην Κρακοβία ήταν για αιώνες κατοικία Πολωνών βασιλιάδων και μοιάζει με σκηνικό από μεσαιωνικό παραμύθι.", image:"assets/europe/poland.jpg" },
-  { name:"Τσεχία", population:10.9, area:78865, lifeExpectancy:79.5, distanceFromGreece:1535, info:"Πρωτεύουσα: Πράγα.<br>Ορόσημο: Γέφυρα Καρόλου.<br>Η Γέφυρα Καρόλου ενώνει τις δύο πλευρές της Πράγας και είναι γεμάτη αγάλματα, μουσικούς και ιστορίες από τον Μεσαίωνα.", image:"assets/europe/czechia.jpg" },
-  { name:"Ουγγαρία", population:9.6, area:93030, lifeExpectancy:76.7, distanceFromGreece:1125, info:"Πρωτεύουσα: Βουδαπέστη.<br>Ορόσημο: Κοινοβούλιο Βουδαπέστης.<br>Το Κοινοβούλιο της Βουδαπέστης στέκεται δίπλα στον Δούναβη και είναι ένα από τα μεγαλύτερα και πιο εντυπωσιακά κτίρια κοινοβουλίου στην Ευρώπη.", image:"assets/europe/hungary.jpg" },
-  { name:"Ρουμανία", population:19.0, area:238397, lifeExpectancy:76.6, distanceFromGreece:743, info:"Πρωτεύουσα: Βουκουρέστι.<br>Ορόσημο: Κάστρο Bran.<br>Το Κάστρο Bran έγινε διάσημο χάρη στους θρύλους γύρω από τον Δράκουλα, αν και η πραγματική του ιστορία είναι ακόμα πιο παλιά.", image:"assets/europe/romania.jpg" },
-  { name:"Βουλγαρία", population:6.4, area:110879, lifeExpectancy:75.8, distanceFromGreece:525, info:"Πρωτεύουσα: Σόφια.<br>Ορόσημο: Καθεδρικός Αλεξάντερ Νέφσκι.<br>Ο Καθεδρικός Αλεξάντερ Νέφσκι με τους χρυσούς θόλους του είναι ένα από τα πιο χαρακτηριστικά σύμβολα της Σόφιας.", image:"assets/europe/bulgaria.jpg" },
-  { name:"Σερβία", population:6.6, area:88361, lifeExpectancy:75.5, distanceFromGreece:805, info:"Πρωτεύουσα: Βελιγράδι.<br>Ορόσημο: Φρούριο Βελιγραδίου.<br>Το Φρούριο Βελιγραδίου βρίσκεται εκεί όπου συναντιούνται ο Δούναβης και ο Σάβος, σημείο στρατηγικής σημασίας για πολλούς αιώνες.", image:"assets/europe/serbia.jpg" },
-  { name:"Κροατία", population:3.9, area:56594, lifeExpectancy:78.3, distanceFromGreece:1080, info:"Πρωτεύουσα: Ζάγκρεμπ.<br>Ορόσημο: Τείχη Ντουμπρόβνικ.<br>Τα Τείχη του Ντουμπρόβνικ αγκαλιάζουν την παλιά πόλη και την προστάτευαν από επιθέσεις, ενώ σήμερα προσφέρουν μοναδική θέα στην Αδριατική.", image:"assets/europe/croatia.jpg" },
-  { name:"Σλοβενία", population:2.1, area:20273, lifeExpectancy:81.3, distanceFromGreece:1205, info:"Πρωτεύουσα: Λιουμπλιάνα.<br>Ορόσημο: Λίμνη Bled.<br>Στη Λίμνη Bled υπάρχει ένα μικρό νησί με εκκλησία, ενώ γύρω του υψώνονται βουνά που κάνουν το τοπίο να μοιάζει παραμυθένιο.", image:"assets/europe/slovenia.jpg" },
-  { name:"Σλοβακία", population:5.4, area:49035, lifeExpectancy:77.8, distanceFromGreece:1250, info:"Πρωτεύουσα: Μπρατισλάβα.<br>Ορόσημο: Κάστρο Μπρατισλάβας.<br>Το Κάστρο της Μπρατισλάβας στέκεται πάνω από τον Δούναβη και φαίνεται από πολλά σημεία της πόλης σαν λευκός φύλακας στον λόφο.", image:"assets/europe/slovakia.jpg" },
-  { name:"Λιθουανία", population:2.9, area:65300, lifeExpectancy:76.0, distanceFromGreece:1860, info:"Πρωτεύουσα: Βίλνιους.<br>Ορόσημο: Παλιά Πόλη Βίλνιους.<br>Η Παλιά Πόλη του Βίλνιους είναι γεμάτη εκκλησίες, στενά δρομάκια και στέγες από κεραμίδια, θυμίζοντας ζωντανό χάρτη ιστορίας.", image:"assets/europe/lithuania.jpg" },
-  { name:"Λετονία", population:1.9, area:64589, lifeExpectancy:75.5, distanceFromGreece:2000, info:"Πρωτεύουσα: Ρίγα.<br>Ορόσημο: Παλιά Πόλη Ρίγας.<br>Η Παλιά Πόλη της Ρίγας ξεχωρίζει για τους πύργους, τις πολύχρωμες προσόψεις και τα κτίρια που δείχνουν την ιστορία της Βαλτικής.", image:"assets/europe/latvia.jpg" },
-  { name:"Εσθονία", population:1.4, area:45227, lifeExpectancy:78.8, distanceFromGreece:2200, info:"Πρωτεύουσα: Ταλίν.<br>Ορόσημο: Παλιά Πόλη Ταλίν.<br>Η Παλιά Πόλη του Ταλίν έχει μεσαιωνικά τείχη, πύργους και κόκκινες στέγες, σαν σκηνικό από ιστορία ιπποτών.", image:"assets/europe/estonia.jpg" },
-  { name:"Ισλανδία", population:0.4, area:103000, lifeExpectancy:83.1, distanceFromGreece:4020, info:"Πρωτεύουσα: Ρέικιαβικ.<br>Ορόσημο: Blue Lagoon.<br>Το Blue Lagoon έχει γαλάζια γεωθερμικά νερά που ζεσταίνονται φυσικά από τη γη, ανάμεσα σε μαύρα ηφαιστειακά πετρώματα.", image:"assets/europe/iceland.jpg" },
-  { name:"Μάλτα", population:0.5, area:316, lifeExpectancy:83.0, distanceFromGreece:870, info:"Πρωτεύουσα: Βαλέτα.<br>Ορόσημο: Καθεδρικός Αγίου Ιωάννη.<br>Ο Καθεδρικός Αγίου Ιωάννη στη Βαλέτα χτίστηκε από τους Ιππότες της Μάλτας και κρύβει εντυπωσιακή μπαρόκ τέχνη στο εσωτερικό του.", image:"assets/europe/malta.jpg" },
-  { name:"Κύπρος", population:1.3, area:9251, lifeExpectancy:82.2, distanceFromGreece:930, info:"Πρωτεύουσα: Λευκωσία.<br>Ορόσημο: Ενετικές Οχυρώσεις Λευκωσίας.<br>Οι Ενετικές Οχυρώσεις της Λευκωσίας χτίστηκαν τον 16ο αιώνα και σχηματίζουν έναν μεγάλο αμυντικό κύκλο γύρω από την παλιά πόλη.", image:"assets/europe/cyprus.jpg" }
-];
-
-const MOBILE = [
-  // Apple
-  { name: "iPhone 17", screenSize: 6.3, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Apple<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/iphone17.jpg" },
-  { name: "iPhone Air", screenSize: 6.6, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Apple<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/iphone-air.jpg" },
-  { name: "iPhone 17 Pro", screenSize: 6.3, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Apple<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/iphone17-pro.jpg" },
-  { name: "iPhone 17 Pro Max", screenSize: 6.9, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Apple<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/iphone17-pro-max.jpg" },
-
-  /*
-  // Samsung
-  { name: "Samsung Galaxy A36", screenSize: 6.7, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Samsung<br><strong>Έτος κυκλοφορίας:</strong> 2026<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> -<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/galaxy-a36.jpg" },
-  { name: "Samsung Galaxy A56", screenSize: 6.7, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Samsung<br><strong>Έτος κυκλοφορίας:</strong> 2026<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> -<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/galaxy-a56.jpg" },
-  { name: "Samsung Galaxy S26", screenSize: 6.2, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Samsung<br><strong>Έτος κυκλοφορίας:</strong> 2026<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/galaxy-s26.jpg" },
-  { name: "Samsung Galaxy S26+", screenSize: 6.7, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Samsung<br><strong>Έτος κυκλοφορίας:</strong> 2026<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/galaxy-s26-plus.jpg" },
-  { name: "Samsung Galaxy S26 Ultra", screenSize: 6.9, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Samsung<br><strong>Έτος κυκλοφορίας:</strong> 2026<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/galaxy-s26-ultra.jpg" },
-  { name: "Samsung Galaxy Z Flip7", screenSize: 6.9, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Samsung<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP48<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/galaxy-z-flip7.jpg" },
-  { name: "Samsung Galaxy Z Fold7", screenSize: 8.0, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Samsung<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP48<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/galaxy-z-fold7.jpg" },
-
-  // Google
-  { name: "Google Pixel 10a", screenSize: 6.3, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Google<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> -<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/pixel-10a.jpg" },
-  { name: "Google Pixel 10", screenSize: 6.3, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Google<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/pixel-10.jpg" },
-  { name: "Google Pixel 10 Pro", screenSize: 6.3, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Google<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/pixel-10-pro.jpg" },
-  { name: "Google Pixel 10 Pro XL", screenSize: 6.8, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Google<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/pixel-10-pro-xl.jpg" },
-
-  // Xiaomi
-  { name: "Redmi Note 14 Pro", screenSize: 6.67, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Xiaomi<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> -<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/redmi-note-14-pro.jpg" },
-  { name: "Redmi Note 14 Pro+", screenSize: 6.67, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Xiaomi<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> -<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/redmi-note-14-pro-plus.jpg" },
-  { name: "Xiaomi 15", screenSize: 6.36, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Xiaomi<br><strong>Έτος κυκλοφορίας:</strong> 2024<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/xiaomi-15.jpg" },
-  { name: "Xiaomi 15 Pro", screenSize: 6.73, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Xiaomi<br><strong>Έτος κυκλοφορίας:</strong> 2024<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/xiaomi-15-pro.jpg" },
-  { name: "Xiaomi 15 Ultra", screenSize: 6.73, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Xiaomi<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/xiaomi-15-ultra.jpg" },
-
-  // POCO
-  { name: "POCO F7 Pro", screenSize: 6.67, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> POCO<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/poco-f7-pro.jpg" },
-  { name: "POCO F7 Ultra", screenSize: 6.67, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> POCO<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> -<br><strong>Βάρος:</strong> -<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> -<br><strong>Αποθήκευση:</strong> -<br><strong>Τιμή:</strong> -<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/poco-f7-ultra.jpg" },
-
-  // OnePlus
-  { name: "OnePlus Nord 5", screenSize: 6.83, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> OnePlus<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> 0 mAh<br><strong>Βάρος:</strong> 0 g<br><strong>Πιστοποίηση:</strong> IP65<br><strong>Φόρτιση:</strong> 0 W<br><strong>Αποθήκευση:</strong> 0 GB<br><strong>Τιμή:</strong> 0 €<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/oneplus-nord-5.jpg" },
-  { name: "OnePlus 15", screenSize: 6.78, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> OnePlus<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> 0 mAh<br><strong>Βάρος:</strong> 0 g<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> 0 W<br><strong>Αποθήκευση:</strong> 0 GB<br><strong>Τιμή:</strong> 0 €<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/oneplus-15.jpg" },
-
-  // OPPO
-  { name: "OPPO Reno14 Pro", screenSize: 6.83, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> OPPO<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> 0 mAh<br><strong>Βάρος:</strong> 0 g<br><strong>Πιστοποίηση:</strong> IP69<br><strong>Φόρτιση:</strong> 0 W<br><strong>Αποθήκευση:</strong> 0 GB<br><strong>Τιμή:</strong> 0 €<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/oppo-reno14-pro.jpg" },
-  { name: "OPPO Find X9 Pro", screenSize: 6.78, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> OPPO<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> 0 mAh<br><strong>Βάρος:</strong> 0 g<br><strong>Πιστοποίηση:</strong> IP69<br><strong>Φόρτιση:</strong> 0 W<br><strong>Αποθήκευση:</strong> 0 GB<br><strong>Τιμή:</strong> 0 €<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/oppo-find-x9-pro.jpg" },
-
-  // Motorola
-  { name: "Motorola Edge 60 Pro", screenSize: 6.7, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Motorola<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> 0 mAh<br><strong>Βάρος:</strong> 0 g<br><strong>Πιστοποίηση:</strong> IP68/IP69<br><strong>Φόρτιση:</strong> 0 W<br><strong>Αποθήκευση:</strong> 0 GB<br><strong>Τιμή:</strong> 0 €<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/motorola-edge-60-pro.jpg" },
-  { name: "Motorola Razr 60 Ultra", screenSize: 7.0, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Motorola<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> 0 mAh<br><strong>Βάρος:</strong> 0 g<br><strong>Πιστοποίηση:</strong> IP48<br><strong>Φόρτιση:</strong> 0 W<br><strong>Αποθήκευση:</strong> 0 GB<br><strong>Τιμή:</strong> 0 €<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/motorola-razr-60-ultra.jpg" },
-
-  // Nothing
-  { name: "Nothing Phone (3)", screenSize: 6.67, geekbench: 0, batteryLife: 0, brightness: 0, info: "<strong>Κατασκευαστής:</strong> Nothing<br><strong>Έτος κυκλοφορίας:</strong> 2025<br><strong>Μπαταρία:</strong> 0 mAh<br><strong>Βάρος:</strong> 0 g<br><strong>Πιστοποίηση:</strong> IP68<br><strong>Φόρτιση:</strong> 0 W<br><strong>Αποθήκευση:</strong> 0 GB<br><strong>Τιμή:</strong> 0 €<br><a href='#' target='_blank'>Σελίδα προϊόντος</a>", image: "assets/mobile/nothing-phone-3.jpg" }
-  */
-];
+const MOBILE = MOBILE_RAW.map(card => ({
+  ...card,
+  info: createMobileDescriptionHtml(card.metadata)
+}));
 
 export const DECKS = {
-  performance: {
-    id: "performance",
-    title: "Performance Legends",
-    cards: CARS,
-    attrs: [
-      { key: "speed", label: "Μέγιστη ταχύτητα", unit: "km/h", higherWins: true },
-      { key: "hp", label: "Ιπποδύναμη", unit: "hp", higherWins: true },
-      { key: "accel", label: "0-100", unit: "sec", higherWins: false },
-      { key: "value", label: "Αξία αγοράς", unit: "€", higherWins: true }
-    ]
-  },
-  space: {
-    id: "space",
-    title: "Cosmic Legends",
-    cards: SPACE,
-    attrs: [
-      { key: "diameter", label: "Διάμετρος", unit: "km", higherWins: true },
-      { key: "gravity", label: "Βαρύτητα", unit: "m/s²", higherWins: true },
-      { key: "temperature", label: "Θερμοκρασία", unit: "°C", higherWins: true },
-      { key: "moons", label: "Δορυφόροι", unit: "", higherWins: true }
-    ]
-  },
-  europe: {
-   id: "europe",
-   title: "Χώρες της Ευρώπης",
-   cards: EUROPE,
-   attrs: [
-     { key: "population", label: "Πληθυσμός", unit: "εκ.", higherWins: true },
-     { key: "area", label: "Έκταση", unit: "km²", higherWins: true },
-     { key: "lifeExpectancy", label: "Προσδόκιμο ζωής", unit: "έτη", higherWins: true },
-     { key: "distanceFromGreece", label: "Απόσταση από Αθήνα", unit: "km", higherWins: true }
-   ]
- },
- mobile: {
-   id: "mobile",
-   title: "Κινητά",
-   cards: MOBILE,
-   attrs: [
-     { key: "screenSize", label: "Μέγεθος οθόνης", unit: '"', higherWins: true },
-     { key: "geekbench", label: "Geekbench", unit: "", higherWins: true },
-     { key: "batteryLife", label: "Αυτονομία", unit: "ώρες", higherWins: true },
-     { key: "brightness", label: "Φωτεινότητα", unit: "nits", higherWins: true }
-   ]
- }
+    mobile: {
+        id: "mobile",
+        title: "Κινητά",
+        cards: MOBILE,
+        attrs: [
+            { key: "screenSize", label: "Μέγεθος οθόνης", unit: '"', higherWins: true },
+            { key: "frontCamera", label: "Εμπρόσθια κάμερα", unit: "MP", higherWins: true },
+            { key: "mainCamera", label: "Πίσω κάμερα", unit: "MP", higherWins: true },
+            { key: "battery", label: "Μπαταρία", unit: "mAh", higherWins: true },
+            { key: "charging", label: "Φόρτιση", unit: "W", higherWins: true }
+        ]
+        }
 };

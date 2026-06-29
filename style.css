@@ -9,3 +9,82 @@ body {
 button {
   -webkit-tap-highlight-color: transparent;
 }
+
+.card-flip-out {
+  animation: cardFlipOut .4s ease-in forwards;
+}
+
+@keyframes cardFlipOut {
+  0% {
+    transform: rotateY(0deg) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotateY(90deg) scale(.95);
+    opacity: 0;
+  }
+}
+
+.card-premium-out {
+  animation: cardPremiumOut 280ms cubic-bezier(.22, 1, .36, 1) forwards;
+}
+
+.result-premium-in {
+  animation: resultPremiumIn 360ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+@keyframes cardPremiumOut {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  100% {
+    transform: translateY(-22px) scale(.97);
+    opacity: 0;
+    filter: blur(3px);
+  }
+}
+
+@keyframes resultPremiumIn {
+  0% {
+    transform: translateY(18px) scale(.98);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.attr-selected {
+  position: relative;
+  z-index: 10;
+  animation: attrSelected 320ms cubic-bezier(.22, 1, .36, 1) forwards;
+  border-color: rgb(219 39 119);
+  background: rgba(219, 39, 119, .18);
+}
+
+@keyframes attrSelected {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(219, 39, 119, 0);
+  }
+
+  45% {
+    transform: scale(1.06);
+    box-shadow:
+      0 0 20px rgba(219, 39, 119, .55),
+      0 0 42px rgba(219, 39, 119, .25);
+  }
+
+  100% {
+    transform: scale(1.03);
+    box-shadow:
+      0 0 16px rgba(219, 39, 119, .45),
+      0 0 30px rgba(219, 39, 119, .18);
+  }
+}

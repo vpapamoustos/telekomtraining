@@ -203,7 +203,7 @@ function badge(r) {
 
 function card(c, active = true) {
   return `
-    <div class="card-shadow overflow-hidden rounded-[2rem] border border-pink-600/40 bg-slate-900">
+    <div id="${active ? "activeCard" : ""}" class="card-shadow overflow-hidden rounded-[2rem] border border-pink-600/40 bg-slate-900">
       <img src="${c.image}" alt="${c.name}" class="h-56 w-full object-cover" />
 
       <div class="p-5">
@@ -238,15 +238,16 @@ function card(c, active = true) {
         }
 
         <div class="grid gap-2">
-          ${attrs().map(a => `
-            <button
-              ${active ? `onclick="pick('${a.key}')"` : ""}
-              class="flex items-center justify-between rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-3 text-left ${active ? "hover:border-pink-600" : ""}"
-            >
-              <span class="text-sm font-bold text-slate-300">${a.label}</span>
-              <span class="text-lg font-black text-pink-600">${fmt(c, a)}</span>
-            </button>
-          `).join("")}
+        ${attrs().map(a => `
+          <button
+            data-attr="${a.key}"
+            ${active ? `onclick="pick('${a.key}')"` : ""}
+            class="flex items-center justify-between rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-3 text-left ${active ? "hover:border-pink-600" : ""}"
+          >
+            <span class="text-sm font-bold text-slate-300">${a.label}</span>
+            <span class="text-lg font-black text-pink-600">${fmt(c, a)}</span>
+          </button>
+        `).join("")}
         </div>
       </div>
     </div>
@@ -548,7 +549,15 @@ function game() {
 }
 
 function pick(k) {
-  resolveRound(k, S.currentTurn);
+  const btn = document.querySelector(`[data-attr="${k}"]`);
+
+  if (btn) {
+    btn.classList.add("attr-selected");
+  }
+
+  setTimeout(() => {
+    resolveRound(k, S.currentTurn);
+  }, 320);
 }
 
 function botPickRandomAttribute() {
@@ -574,13 +583,29 @@ function resolveRound(k, selectedBy) {
   }
 
   S.round = { a, pc, bc, w, selectedBy };
-  S.screen = "result";
 
-  render();
-
-  setTimeout(() => {
-    scrollToGameTop();
-  }, 80);
+  const activeCard = document.getElementById("activeCard");
+  
+  if (activeCard) {
+    activeCard.classList.add("card-premium-out");
+  
+    setTimeout(() => {
+      S.screen = "result";
+      render();
+  
+      setTimeout(() => {
+        scrollToGameTop();
+      }, 80);
+    }, 360);
+  
+  } else {
+    S.screen = "result";
+    render();
+  
+    setTimeout(() => {
+      scrollToGameTop();
+    }, 80);
+  }
 }
 
 function cont() {
@@ -653,6 +678,7 @@ function result() {
   const selectedByText = `${selectedByName} selected`;
 
   app.innerHTML = h() + `
+  <div class="result-premium-in">
     <section class="mb-4 rounded-3xl border border-pink-600/30 bg-slate-900 p-4 text-center">
       <p class="text-sm text-slate-400">${selectedByText}: <b>${r.a.label}</b></p>
       <h2 class="mt-1 text-3xl font-black">${txt}</h2>
@@ -678,6 +704,7 @@ function result() {
         ${card(r.bc, false)}
       </div>
     </div>
+  </div>
   `;
 }
 

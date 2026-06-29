@@ -106,7 +106,7 @@ function startMatch(mode, type) {
 
   const n =
     type === "quick"
-      ? 4
+      ? 14
       : 30;
 
   let deck = shuffle(ACTIVE_DECK.cards).slice(0, n);
@@ -132,7 +132,7 @@ function startMatch(mode, type) {
 function h() {
   const showTimer = S.matchType === "time" && S.screen !== "home";
   const timerIsDanger = showTimer && S.timeLeft <= 30;
-  const title = S.screen === "home" ? "Training Cards" : ACTIVE_DECK.title;
+  const title = S.screen === "home" ? "Παίξε - Μάθε!" : ACTIVE_DECK.title;
 
   return `
     <header class="mb-3">
@@ -143,7 +143,7 @@ function h() {
             S.screen !== "home"
               ? `
                 <p class="text-[10px] font-black uppercase tracking-[.25em] text-white">
-                  Υπερατού
+                  Παίξε - Μάθε!
                 </p>
               `
               : ""
@@ -440,7 +440,7 @@ function home() {
           "
           class="rounded-2xl bg-pink-600 px-5 py-4 font-black text-white"
         >
-          Quick Match · 2 vs 2
+          Quick Match · 7 vs 7
         </button>
 
         <button
@@ -577,6 +577,10 @@ function resolveRound(k, selectedBy) {
   S.screen = "result";
 
   render();
+
+  setTimeout(() => {
+    scrollToGameTop();
+  }, 80);
 }
 
 function cont() {
@@ -764,6 +768,34 @@ function over() {
       </button>
     </section>
   `;
+}
+
+function scrollToGameTop(duration = 650) {
+  const target = app;
+  const targetY = target.getBoundingClientRect().top + window.scrollY;
+  const startY = window.scrollY;
+  const distance = targetY - startY;
+  const startTime = performance.now();
+
+  function easeInOutCubic(t) {
+    return t < 0.5
+      ? 4 * t * t * t
+      : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function animate(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeInOutCubic(progress);
+
+    window.scrollTo(0, startY + distance * eased);
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  requestAnimationFrame(animate);
 }
 
 function render() {

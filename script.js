@@ -203,7 +203,7 @@ function badge(r) {
 
 function card(c, active = true) {
   return `
-    <div class="card-shadow overflow-hidden rounded-[2rem] border border-amber-400/40 bg-slate-900">
+    <div class="card-shadow overflow-hidden rounded-[2rem] border border-pink-600/40 bg-slate-900">
       <img src="${c.image}" alt="${c.name}" class="h-56 w-full object-cover" />
 
       <div class="p-5">
@@ -241,10 +241,10 @@ function card(c, active = true) {
           ${attrs().map(a => `
             <button
               ${active ? `onclick="pick('${a.key}')"` : ""}
-              class="flex items-center justify-between rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-3 text-left ${active ? "hover:border-amber-400" : ""}"
+              class="flex items-center justify-between rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-3 text-left ${active ? "hover:border-pink-600" : ""}"
             >
               <span class="text-sm font-bold text-slate-300">${a.label}</span>
-              <span class="text-lg font-black text-amber-300">${fmt(c, a)}</span>
+              <span class="text-lg font-black text-pink-600">${fmt(c, a)}</span>
             </button>
           `).join("")}
         </div>
@@ -264,7 +264,7 @@ function scoreBar() {
         <p class="text-2xl font-black">${S.p.length}</p>
       </div>
 
-      <div class="rounded-2xl border border-amber-400/30 bg-pink-600/10 p-3 text-center">
+      <div class="rounded-2xl border border-pink-600/30 bg-pink-600/10 p-3 text-center">
         <p class="text-xs text-amber-300">Κάρτες σε αναμονή</p>
         <p class="text-2xl font-black">${S.pending.length}</p>
       </div>
@@ -367,7 +367,7 @@ function home() {
       
         <select
           onchange="selectDeck(this.value)"
-          class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-bold text-white outline-none focus:border-amber-400"
+          class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-bold text-white outline-none focus:border-pink-600"
         >
           <option value="mobiles" ${ACTIVE_DECK.id === "mobiles" ? "selected" : ""}>Κινητά</option>
         </select>
@@ -410,7 +410,7 @@ function home() {
       <input
         id="p1Name"
         value="${S.player1Name}"
-        class="mb-4 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-amber-400"
+        class="mb-4 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-pink-600"
       />
 
       ${
@@ -423,7 +423,7 @@ function home() {
             <input
               id="p2Name"
               value="${S.player2Name}"
-              class="mb-4 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-amber-400"
+              class="mb-4 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-pink-600"
             />
           `
           : ""
@@ -653,7 +653,7 @@ function result() {
   const selectedByText = `${selectedByName} selected`;
 
   app.innerHTML = h() + `
-    <section class="mb-4 rounded-3xl border border-amber-400/30 bg-slate-900 p-4 text-center">
+    <section class="mb-4 rounded-3xl border border-pink-600/30 bg-slate-900 p-4 text-center">
       <p class="text-sm text-slate-400">${selectedByText}: <b>${r.a.label}</b></p>
       <h2 class="mt-1 text-3xl font-black">${txt}</h2>
       <p class="mt-1 text-sm text-slate-400">

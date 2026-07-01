@@ -1,5 +1,13 @@
-export const APP_VERSION = "0.3a";
+export const APP_VERSION = "0.4a";
 export const APP_CHANGELOG = [
+  {
+    version: "0.4a",
+    changes: [
+      "Added configurable Quick Match card count.",
+      "Added configurable Time Attack duration.",
+      "Added animated option panels for Quick Match and Time Attack."
+    ]
+  },
   {
     version: "0.3a",
     changes: [

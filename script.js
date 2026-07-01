@@ -9,6 +9,7 @@ function attrs() {
 }
 
 const app = document.getElementById("app");
+const PANEL_CLOSE_MS = 240;
 
 function money(n) {
   return "€" + Number(n).toLocaleString("el-GR");
@@ -64,12 +65,125 @@ function formatTime(seconds) {
   return `${mins}:${String(secs).padStart(2, "0")}`;
 }
 
+function clampTimeAttackMinutes(value) {
+  const minutes = Number.parseInt(value, 10);
+
+  if (Number.isNaN(minutes)) return 3;
+
+  return Math.min(Math.max(minutes, 1), 20);
+}
+
+function clampQuickCardsPerPlayer(value) {
+  const cards = Number.parseInt(value, 10);
+
+  if (Number.isNaN(cards)) return 7;
+
+  return Math.min(Math.max(cards, 1), 15);
+}
+
+function timeAttackDurationSeconds() {
+  return clampTimeAttackMinutes(S.timeAttackMinutes) * 60;
+}
+
+function setPlayerNamesFromHome() {
+  S.player1Name = document.getElementById("p1Name").value || "Player 1";
+  S.player2Name = S.mode === "human"
+    ? (document.getElementById("p2Name").value || "Player 2")
+    : "Υπολογιστής";
+}
+
+function revealTimeAttackOptions() {
+  setPlayerNamesFromHome();
+  if (S.timeAttackOpen && !S.timeAttackClosing) {
+    hideTimeAttackOptions();
+    return;
+  }
+
+  S.quickMatchOpen = false;
+  S.quickMatchClosing = false;
+  S.timeAttackOpen = true;
+  S.timeAttackClosing = false;
+  S.timeAttackMinutes = clampTimeAttackMinutes(S.timeAttackMinutes);
+  render();
+}
+
+function revealQuickMatchOptions() {
+  setPlayerNamesFromHome();
+  if (S.quickMatchOpen && !S.quickMatchClosing) {
+    hideQuickMatchOptions();
+    return;
+  }
+
+  S.quickMatchOpen = true;
+  S.quickMatchClosing = false;
+  S.timeAttackOpen = false;
+  S.timeAttackClosing = false;
+  S.quickCardsPerPlayer = clampQuickCardsPerPlayer(S.quickCardsPerPlayer);
+  render();
+}
+
+function hideQuickMatchOptions() {
+  S.quickMatchClosing = true;
+  render();
+
+  setTimeout(() => {
+    if (!S.quickMatchClosing) return;
+
+    S.quickMatchOpen = false;
+    S.quickMatchClosing = false;
+    render();
+  }, PANEL_CLOSE_MS);
+}
+
+function hideTimeAttackOptions() {
+  S.timeAttackClosing = true;
+  render();
+
+  setTimeout(() => {
+    if (!S.timeAttackClosing) return;
+
+    S.timeAttackOpen = false;
+    S.timeAttackClosing = false;
+    render();
+  }, PANEL_CLOSE_MS);
+}
+
+function updateQuickCardsPerPlayer(value) {
+  S.quickCardsPerPlayer = clampQuickCardsPerPlayer(value);
+  const input = document.getElementById("quickCardsPerPlayer");
+
+  if (input) {
+    input.value = S.quickCardsPerPlayer;
+  }
+}
+
+function startQuickMatchFromHome() {
+  setPlayerNamesFromHome();
+  S.quickCardsPerPlayer = clampQuickCardsPerPlayer(document.getElementById("quickCardsPerPlayer").value);
+  startMatch(S.mode, "quick");
+}
+
+function updateTimeAttackMinutes(value) {
+  S.timeAttackMinutes = clampTimeAttackMinutes(value);
+  const input = document.getElementById("timeAttackMinutes");
+
+  if (input) {
+    input.value = S.timeAttackMinutes;
+  }
+}
+
+function startTimeAttackFromHome() {
+  setPlayerNamesFromHome();
+  S.timeAttackMinutes = clampTimeAttackMinutes(document.getElementById("timeAttackMinutes").value);
+  startMatch(S.mode, "time");
+}
+
 function startTimer() {
   stopTimer();
 
   if (S.matchType !== "time") return;
 
-  S.timeLeft = 180;
+  S.timeLeft = timeAttackDurationSeconds();
   S.timeExpired = false;
 
   S.timerId = setInterval(() => {
@@ -106,7 +220,7 @@ function startMatch(mode, type) {
 
   const n =
     type === "quick"
-      ? 14
+      ? clampQuickCardsPerPlayer(S.quickCardsPerPlayer) * 2
       : 30;
 
   let deck = shuffle(ACTIVE_DECK.cards).slice(0, n);
@@ -122,7 +236,7 @@ function startMatch(mode, type) {
   S.currentTurn = "player1";
   S.screen = "game";
 
-  S.timeLeft = type === "time" ? 180 : null;
+  S.timeLeft = type === "time" ? timeAttackDurationSeconds() : null;
   S.timeExpired = false;
 
   render();
@@ -432,24 +546,57 @@ function home() {
 
       <div class="grid gap-3">
         <button
-          onclick="
-            S.player1Name=document.getElementById('p1Name').value||'Player 1';
-            S.player2Name=S.mode==='human'
-              ? (document.getElementById('p2Name').value||'Player 2')
-              : 'Υπολογιστής';
-            startMatch(S.mode, 'quick');
-          "
-          class="rounded-2xl bg-pink-600 px-5 py-4 font-black text-white"
+          onclick="revealQuickMatchOptions()"
+          class="rounded-2xl bg-pink-600 px-5 py-4 font-black text-white transition hover:bg-pink-500"
         >
-          Quick Match · 7 vs 7
+          Quick Match
         </button>
+
+        ${
+          S.quickMatchOpen || S.quickMatchClosing
+            ? `
+              <div class="time-attack-panel ${S.quickMatchClosing ? "time-attack-panel-out" : ""} rounded-2xl border border-pink-600/40 bg-pink-600/10 p-4">
+                <label for="quickCardsPerPlayer" class="mb-2 block text-sm font-bold text-slate-200">
+                  Πόσες κάρτες θα έχει ο κάθε παίκτης?
+                </label>
+
+                <div class="flex items-center gap-3">
+                  <input
+                    id="quickCardsPerPlayer"
+                    type="number"
+                    min="1"
+                    max="15"
+                    step="1"
+                    inputmode="numeric"
+                    value="${S.quickCardsPerPlayer}"
+                    oninput="updateQuickCardsPerPlayer(this.value)"
+                    onblur="updateQuickCardsPerPlayer(this.value)"
+                    class="min-w-0 flex-1 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-center text-lg font-black text-white outline-none focus:border-pink-600"
+                  />
+
+                  <button
+                    onclick="startQuickMatchFromHome()"
+                    class="rounded-2xl bg-pink-600 px-5 py-3 font-black text-white"
+                  >
+                    Start
+                  </button>
+                </div>
+
+                <p class="mt-2 text-xs font-bold text-slate-400">
+                  Επίλεξε από 1 έως 15 κάρτες.
+                </p>
+              </div>
+            `
+            : ""
+        }
 
         <button
           onclick="
-            S.player1Name=document.getElementById('p1Name').value||'Player 1';
-            S.player2Name=S.mode==='human'
-              ? (document.getElementById('p2Name').value||'Player 2')
-              : 'Υπολογιστής';
+            setPlayerNamesFromHome();
+            S.quickMatchOpen=false;
+            S.quickMatchClosing=false;
+            S.timeAttackOpen=false;
+            S.timeAttackClosing=false;
             startMatch(S.mode, 'classic');
           "
           class="rounded-2xl border border-slate-700 bg-slate-800 px-5 py-4 font-black"
@@ -458,17 +605,49 @@ function home() {
         </button>
 
         <button
-          onclick="
-            S.player1Name=document.getElementById('p1Name').value||'Player 1';
-            S.player2Name=S.mode==='human'
-              ? (document.getElementById('p2Name').value||'Player 2')
-              : 'Υπολογιστής';
-            startMatch(S.mode, 'time');
-          "
-          class="rounded-2xl border border-pink-600 bg-slate-950 px-5 py-4 font-black text-white"
+          onclick="revealTimeAttackOptions()"
+          class="rounded-2xl border border-pink-600 bg-slate-950 px-5 py-4 font-black text-white transition hover:bg-pink-600/20"
         >
-          Time Attack · 3 min
+          Time Attack
         </button>
+
+        ${
+          S.timeAttackOpen || S.timeAttackClosing
+            ? `
+              <div class="time-attack-panel ${S.timeAttackClosing ? "time-attack-panel-out" : ""} rounded-2xl border border-pink-600/40 bg-pink-600/10 p-4">
+                <label for="timeAttackMinutes" class="mb-2 block text-sm font-bold text-slate-200">
+                  Διάρκεια Time Attack σε λεπτά
+                </label>
+
+                <div class="flex items-center gap-3">
+                  <input
+                    id="timeAttackMinutes"
+                    type="number"
+                    min="1"
+                    max="20"
+                    step="1"
+                    inputmode="numeric"
+                    value="${S.timeAttackMinutes}"
+                    oninput="updateTimeAttackMinutes(this.value)"
+                    onblur="updateTimeAttackMinutes(this.value)"
+                    class="min-w-0 flex-1 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-center text-lg font-black text-white outline-none focus:border-pink-600"
+                  />
+
+                  <button
+                    onclick="startTimeAttackFromHome()"
+                    class="rounded-2xl bg-pink-600 px-5 py-3 font-black text-white"
+                  >
+                    Start
+                  </button>
+                </div>
+
+                <p class="mt-2 text-xs font-bold text-slate-400">
+                  Επίλεξε από 1 έως 20 λεπτά.
+                </p>
+              </div>
+            `
+            : ""
+        }
       </div>
     </section>
 
@@ -844,6 +1023,13 @@ window.DECKS = DECKS;
 window.render = render;
 window.start = start;
 window.startMatch = startMatch;
+window.setPlayerNamesFromHome = setPlayerNamesFromHome;
+window.revealQuickMatchOptions = revealQuickMatchOptions;
+window.updateQuickCardsPerPlayer = updateQuickCardsPerPlayer;
+window.startQuickMatchFromHome = startQuickMatchFromHome;
+window.revealTimeAttackOptions = revealTimeAttackOptions;
+window.updateTimeAttackMinutes = updateTimeAttackMinutes;
+window.startTimeAttackFromHome = startTimeAttackFromHome;
 window.pick = pick;
 window.cont = cont;
 window.botPickRandomAttribute = botPickRandomAttribute;

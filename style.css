@@ -34,6 +34,15 @@ button {
   animation: resultPremiumIn 360ms cubic-bezier(.22, 1, .36, 1) both;
 }
 
+.time-attack-panel {
+  animation: timeAttackPanelIn 320ms cubic-bezier(.22, 1, .36, 1) both;
+  transform-origin: top center;
+}
+
+.time-attack-panel-out {
+  animation: timeAttackPanelOut 220ms cubic-bezier(.64, 0, .78, 0) both;
+}
+
 @keyframes cardPremiumOut {
   0% {
     transform: translateY(0) scale(1);
@@ -57,6 +66,34 @@ button {
   100% {
     transform: translateY(0) scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes timeAttackPanelIn {
+  0% {
+    transform: translateY(-10px) scale(.98);
+    opacity: 0;
+    filter: blur(4px);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes timeAttackPanelOut {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  100% {
+    transform: translateY(-10px) scale(.98);
+    opacity: 0;
+    filter: blur(4px);
   }
 }
 

@@ -15,9 +15,15 @@ export const S = {
     log: [],
   
     currentTurn: "player1",
-  
+
+    quickMatchOpen: false,
+    quickMatchClosing: false,
+    quickCardsPerPlayer: 7,
     timeLeft: null,
     timerId: null,
+    timeAttackOpen: false,
+    timeAttackClosing: false,
+    timeAttackMinutes: 3,
     timeExpired: false,
     debugOpen: false
   };

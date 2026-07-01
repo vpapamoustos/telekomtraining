@@ -10,9 +10,182 @@ function attrs() {
 
 const app = document.getElementById("app");
 const PANEL_CLOSE_MS = 240;
+const PROFILE_STORAGE_KEY = "telekomtraining.profiles";
 
 function money(n) {
   return "€" + Number(n).toLocaleString("el-GR");
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function normalizeName(value) {
+  return String(value || "").trim();
+}
+
+function createProfileId() {
+  if (window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
+  }
+
+  return `profile-${Date.now()}-${Math.floor(Math.random() * 100000)}`;
+}
+
+function loadProfiles() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || "[]");
+
+    S.profiles = Array.isArray(parsed)
+      ? parsed
+        .filter(profile => profile && typeof profile.id === "string" && typeof profile.name === "string")
+        .map(profile => ({ id: profile.id, name: profile.name }))
+      : [];
+  } catch {
+    S.profiles = [];
+  }
+}
+
+function saveProfiles() {
+  localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(S.profiles));
+}
+
+function profileById(profileId) {
+  return S.profiles.find(profile => profile.id === profileId) || null;
+}
+
+function profileName(profileId) {
+  return profileById(profileId)?.name || "";
+}
+
+function playerLabel(playerKey) {
+  return playerKey === "player1" ? "Παίκτης 1" : "Παίκτης 2";
+}
+
+function identityModeKey(playerKey) {
+  return `${playerKey}IdentityMode`;
+}
+
+function profileIdKey(playerKey) {
+  return `${playerKey}ProfileId`;
+}
+
+function guestNameKey(playerKey) {
+  return `${playerKey}GuestName`;
+}
+
+function playerNameKey(playerKey) {
+  return `${playerKey}Name`;
+}
+
+function defaultGuestName(playerKey) {
+  return playerKey === "player1" ? "Παίκτης 1" : "Παίκτης 2";
+}
+
+function setIdentityPanel(playerKey, mode) {
+  S.identityPanelOpenFor = playerKey;
+  S.identityPanelMode = mode;
+  S.identityMessage = "";
+  render();
+}
+
+function closeIdentityPanel() {
+  S.identityPanelOpenFor = null;
+  S.identityPanelMode = null;
+  S.identityMessage = "";
+  render();
+}
+
+function createProfileForPlayer(playerKey) {
+  const input = document.getElementById(`${playerKey}ProfileName`);
+  const name = normalizeName(input?.value);
+
+  if (!name) {
+    S.identityMessage = "Συμπλήρωσε όνομα για το προφίλ.";
+    render();
+    return;
+  }
+
+  const duplicate = S.profiles.some(profile => profile.name.toLocaleLowerCase("el-GR") === name.toLocaleLowerCase("el-GR"));
+
+  if (duplicate) {
+    S.identityMessage = "Υπάρχει ήδη προφίλ με αυτό το όνομα.";
+    render();
+    return;
+  }
+
+  const profile = { id: createProfileId(), name };
+
+  S.profiles.push(profile);
+  saveProfiles();
+  selectProfileForPlayer(playerKey, profile.id);
+  closeIdentityPanel();
+}
+
+function selectProfileForPlayer(playerKey, profileId) {
+  S[identityModeKey(playerKey)] = "profile";
+  S[profileIdKey(playerKey)] = profileId;
+  S[playerNameKey(playerKey)] = profileName(profileId) || defaultGuestName(playerKey);
+  S.identityMessage = "";
+  render();
+}
+
+function loginGuestForPlayer(playerKey) {
+  const input = document.getElementById(`${playerKey}GuestName`);
+  const name = normalizeName(input?.value) || defaultGuestName(playerKey);
+
+  S[identityModeKey(playerKey)] = "guest";
+  S[guestNameKey(playerKey)] = name;
+  S[profileIdKey(playerKey)] = "";
+  S[playerNameKey(playerKey)] = name;
+  closeIdentityPanel();
+}
+
+function resolvePlayerName(playerKey) {
+  if (S[identityModeKey(playerKey)] === "profile") {
+    return profileName(S[profileIdKey(playerKey)]) || defaultGuestName(playerKey);
+  }
+
+  return normalizeName(S[guestNameKey(playerKey)]) || defaultGuestName(playerKey);
+}
+
+function validatePlayerIdentities() {
+  if (S.mode !== "human") return true;
+
+  const player1ProfileId = S.player1IdentityMode === "profile" ? S.player1ProfileId : "";
+  const player2ProfileId = S.player2IdentityMode === "profile" ? S.player2ProfileId : "";
+
+  if (player1ProfileId && player1ProfileId === player2ProfileId) {
+    S.identityMessage = "Διάλεξε διαφορετικό προφίλ για κάθε παίκτη.";
+    render();
+    return false;
+  }
+
+  return true;
+}
+
+function setGameMode(mode) {
+  S.mode = mode;
+  S.identityMessage = "";
+
+  if (mode === "bot") {
+    S.player2Name = "Υπολογιστής";
+
+    if (S.identityPanelOpenFor === "player2") {
+      closeIdentityPanel();
+      return;
+    }
+  } else if (S.player2Name === "Υπολογιστής") {
+    S.player2Name = resolvePlayerName("player2");
+  }
+
+  setPlayerNamesFromHome();
+  render();
 }
 
 function fmt(c, a) {
@@ -86,9 +259,9 @@ function timeAttackDurationSeconds() {
 }
 
 function setPlayerNamesFromHome() {
-  S.player1Name = document.getElementById("p1Name").value || "Player 1";
+  S.player1Name = resolvePlayerName("player1");
   S.player2Name = S.mode === "human"
-    ? (document.getElementById("p2Name").value || "Player 2")
+    ? resolvePlayerName("player2")
     : "Υπολογιστής";
 }
 
@@ -159,6 +332,7 @@ function updateQuickCardsPerPlayer(value) {
 
 function startQuickMatchFromHome() {
   setPlayerNamesFromHome();
+  if (!validatePlayerIdentities()) return;
   S.quickCardsPerPlayer = clampQuickCardsPerPlayer(document.getElementById("quickCardsPerPlayer").value);
   startMatch(S.mode, "quick");
 }
@@ -174,8 +348,19 @@ function updateTimeAttackMinutes(value) {
 
 function startTimeAttackFromHome() {
   setPlayerNamesFromHome();
+  if (!validatePlayerIdentities()) return;
   S.timeAttackMinutes = clampTimeAttackMinutes(document.getElementById("timeAttackMinutes").value);
   startMatch(S.mode, "time");
+}
+
+function startClassicFromHome() {
+  setPlayerNamesFromHome();
+  if (!validatePlayerIdentities()) return;
+  S.quickMatchOpen = false;
+  S.quickMatchClosing = false;
+  S.timeAttackOpen = false;
+  S.timeAttackClosing = false;
+  startMatch(S.mode, "classic");
 }
 
 function startTimer() {
@@ -470,6 +655,148 @@ function changelogPanel() {
   `;
 }
 
+function playerIdentityPanel(playerKey) {
+  const label = playerLabel(playerKey);
+  const otherPlayerKey = playerKey === "player1" ? "player2" : "player1";
+  const selectedProfileId = S[profileIdKey(playerKey)];
+  const currentName = resolvePlayerName(playerKey);
+  const currentMode = S[identityModeKey(playerKey)];
+  const otherSelectedProfileId =
+    S.mode === "human" && S[identityModeKey(otherPlayerKey)] === "profile"
+      ? S[profileIdKey(otherPlayerKey)]
+      : "";
+  const isCreateOpen = S.identityPanelOpenFor === playerKey && S.identityPanelMode === "create";
+  const isGuestOpen = S.identityPanelOpenFor === playerKey && S.identityPanelMode === "guest";
+  const profileOptions = S.profiles.map(profile => {
+    const isUsedByOtherPlayer = profile.id === otherSelectedProfileId;
+
+    return `
+      <option
+        value="${escapeHtml(profile.id)}"
+        ${profile.id === selectedProfileId ? "selected" : ""}
+        ${isUsedByOtherPlayer ? "disabled" : ""}
+      >
+        ${escapeHtml(profile.name)}${isUsedByOtherPlayer ? " (χρησιμοποιείται)" : ""}
+      </option>
+    `;
+  }).join("");
+
+  return `
+    <section class="mb-5 rounded-2xl border border-slate-800 bg-slate-950/50 p-4">
+      <div class="mb-3 flex items-start justify-between gap-3">
+        <div>
+          <h3 class="text-sm font-black text-white">${label}</h3>
+          <p class="mt-1 text-xs font-bold text-slate-400">
+            ${currentMode === "profile" ? "Προφίλ" : "Επισκέπτης"}: ${escapeHtml(currentName)}
+          </p>
+        </div>
+      </div>
+
+      <label class="mb-2 block text-sm font-bold text-slate-300">
+        Επιλογή υφιστάμενου προφίλ
+      </label>
+
+      <select
+        onchange="if(this.value) selectProfileForPlayer('${playerKey}', this.value)"
+        class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-bold text-white outline-none focus:border-pink-600"
+      >
+        <option value="">${S.profiles.length ? "Διάλεξε προφίλ" : "Δεν υπάρχουν αποθηκευμένα προφίλ"}</option>
+        ${profileOptions}
+      </select>
+
+      <div class="mt-3 grid grid-cols-2 gap-3">
+        <button
+          onclick="setIdentityPanel('${playerKey}', 'create')"
+          class="rounded-2xl border border-pink-600 bg-pink-600/10 px-3 py-3 text-sm font-black text-white"
+        >
+          Δημιουργία προφίλ
+        </button>
+
+        <button
+          onclick="setIdentityPanel('${playerKey}', 'guest')"
+          class="rounded-2xl border border-slate-700 bg-slate-800 px-3 py-3 text-sm font-black text-white"
+        >
+          Σύνδεση ως επισκέπτης
+        </button>
+      </div>
+
+      ${
+        isCreateOpen
+          ? `
+            <div class="mt-3 rounded-2xl border border-pink-600/40 bg-pink-600/10 p-4">
+              <label for="${playerKey}ProfileName" class="mb-2 block text-sm font-bold text-slate-200">
+                Όνομα νέου προφίλ
+              </label>
+
+              <input
+                id="${playerKey}ProfileName"
+                value=""
+                class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-pink-600"
+              />
+
+              ${
+                S.identityMessage
+                  ? `<p class="mt-2 text-xs font-bold text-amber-300">${escapeHtml(S.identityMessage)}</p>`
+                  : ""
+              }
+
+              <div class="mt-3 grid grid-cols-2 gap-3">
+                <button
+                  onclick="createProfileForPlayer('${playerKey}')"
+                  class="rounded-2xl bg-pink-600 px-4 py-3 font-black text-white"
+                >
+                  Αποθήκευση
+                </button>
+
+                <button
+                  onclick="closeIdentityPanel()"
+                  class="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-black text-white"
+                >
+                  Άκυρο
+                </button>
+              </div>
+            </div>
+          `
+          : ""
+      }
+
+      ${
+        isGuestOpen
+          ? `
+            <div class="mt-3 rounded-2xl border border-slate-700 bg-slate-900 p-4">
+              <label for="${playerKey}GuestName" class="mb-2 block text-sm font-bold text-slate-200">
+                Όνομα επισκέπτη
+              </label>
+
+              <input
+                id="${playerKey}GuestName"
+                value="${escapeHtml(S[guestNameKey(playerKey)] || defaultGuestName(playerKey))}"
+                class="w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-pink-600"
+              />
+
+              <div class="mt-3 grid grid-cols-2 gap-3">
+                <button
+                  onclick="loginGuestForPlayer('${playerKey}')"
+                  class="rounded-2xl bg-pink-600 px-4 py-3 font-black text-white"
+                >
+                  Συνέχεια
+                </button>
+
+                <button
+                  onclick="closeIdentityPanel()"
+                  class="rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 font-black text-white"
+                >
+                  Άκυρο
+                </button>
+              </div>
+            </div>
+          `
+          : ""
+      }
+    </section>
+  `;
+}
+
 function home() {
   app.innerHTML = h() + `
     <section class="rounded-[2rem] border border-slate-800 bg-slate-900/80 p-5">
@@ -495,7 +822,7 @@ function home() {
 
         <div class="grid grid-cols-2 gap-3">
           <button
-            onclick="S.mode='bot'; S.player2Name='Υπολογιστής'; render()"
+            onclick="setGameMode('bot')"
             class="rounded-2xl px-4 py-3 font-black ${
               S.mode === "bot"
                 ? "bg-pink-600 text-white"
@@ -506,7 +833,7 @@ function home() {
           </button>
 
           <button
-            onclick="S.mode='human'; if(S.player2Name==='Υπολογιστής') S.player2Name='Παίκτης 2'; render()"
+            onclick="setGameMode('human')"
             class="rounded-2xl px-4 py-3 font-black ${
               S.mode === "human"
                 ? "bg-pink-600 text-white"
@@ -518,28 +845,20 @@ function home() {
         </div>
       </div>
 
-      <label class="mb-2 block text-sm font-bold text-slate-300">
-        Όνομα παίκτη 1
-      </label>
-
-      <input
-        id="p1Name"
-        value="${S.player1Name}"
-        class="mb-4 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-pink-600"
-      />
+      ${playerIdentityPanel("player1")}
 
       ${
         S.mode === "human"
-          ? `
-            <label class="mb-2 block text-sm font-bold text-slate-300">
-              Όνομα παίκτη 2
-            </label>
+          ? playerIdentityPanel("player2")
+          : ""
+      }
 
-            <input
-              id="p2Name"
-              value="${S.player2Name}"
-              class="mb-4 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 outline-none focus:border-pink-600"
-            />
+      ${
+        S.identityMessage && S.identityPanelOpenFor === null
+          ? `
+            <p class="mb-4 rounded-2xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm font-bold text-amber-200">
+              ${escapeHtml(S.identityMessage)}
+            </p>
           `
           : ""
       }
@@ -591,14 +910,7 @@ function home() {
         }
 
         <button
-          onclick="
-            setPlayerNamesFromHome();
-            S.quickMatchOpen=false;
-            S.quickMatchClosing=false;
-            S.timeAttackOpen=false;
-            S.timeAttackClosing=false;
-            startMatch(S.mode, 'classic');
-          "
+          onclick="startClassicFromHome()"
           class="rounded-2xl border border-slate-700 bg-slate-800 px-5 py-4 font-black"
         >
           Classic Match · 15 vs 15
@@ -1024,9 +1336,16 @@ window.render = render;
 window.start = start;
 window.startMatch = startMatch;
 window.setPlayerNamesFromHome = setPlayerNamesFromHome;
+window.setGameMode = setGameMode;
+window.setIdentityPanel = setIdentityPanel;
+window.closeIdentityPanel = closeIdentityPanel;
+window.createProfileForPlayer = createProfileForPlayer;
+window.selectProfileForPlayer = selectProfileForPlayer;
+window.loginGuestForPlayer = loginGuestForPlayer;
 window.revealQuickMatchOptions = revealQuickMatchOptions;
 window.updateQuickCardsPerPlayer = updateQuickCardsPerPlayer;
 window.startQuickMatchFromHome = startQuickMatchFromHome;
+window.startClassicFromHome = startClassicFromHome;
 window.revealTimeAttackOptions = revealTimeAttackOptions;
 window.updateTimeAttackMinutes = updateTimeAttackMinutes;
 window.startTimeAttackFromHome = startTimeAttackFromHome;
@@ -1036,4 +1355,6 @@ window.botPickRandomAttribute = botPickRandomAttribute;
 window.stopTimer = stopTimer;
 window.selectDeck = selectDeck;
 
+loadProfiles();
+setPlayerNamesFromHome();
 render();

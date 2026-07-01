@@ -1,5 +1,13 @@
-export const APP_VERSION = "0.4a";
+export const APP_VERSION = "0.5a";
 export const APP_CHANGELOG = [
+  {
+    version: "0.5a",
+    changes: [
+      "Added local user profiles stored in localStorage.",
+      "Added profile selection, profile creation, and guest login for Player 1 and Player 2.",
+      "Added validation to prevent both human players from using the same saved profile."
+    ]
+  },
   {
     version: "0.4a",
     changes: [

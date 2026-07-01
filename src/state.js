@@ -6,7 +6,17 @@ export const S = {
   
     player1Name: "Παίκτης 1",
     player2Name: "Υπολογιστής",
-  
+    profiles: [],
+    player1IdentityMode: "guest",
+    player2IdentityMode: "guest",
+    player1ProfileId: "",
+    player2ProfileId: "",
+    player1GuestName: "Παίκτης 1",
+    player2GuestName: "Παίκτης 2",
+    identityPanelOpenFor: null,
+    identityPanelMode: null,
+    identityMessage: "",
+
     p: [],
     b: [],
   
